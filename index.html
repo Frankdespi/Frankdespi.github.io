@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Franklin Madumere | AI and automation builder</title>
+<meta name="description" content="Franklin Madumere builds n8n and Make.com workflows that use OpenAI to score, route, and log work, with a person in the loop. Lagos, Nigeria.">
+<meta property="og:title" content="Franklin Madumere | AI and automation builder">
+<meta property="og:description" content="AI workflows that know when to ask a person. Try the routing rules from my capstone project.">
+<meta property="og:type" content="website">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F2F4F1; --surface:#FFFFFF; --ink:#0F1F1C; --muted:#4B5A56; --line:#CFD6D1;
+  --teal:#0B7A66; --wash:#DCEFE9;
+  --r-ready:#0B7A66; --r-private:#3A4F7A; --r-escalated:#B3361F; --r-review:#8A5A00;
+  --display:'Bricolage Grotesque','Helvetica Neue',system-ui,sans-serif;
+  --body:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ground:#0E1715; --surface:#152421; --ink:#E7EFEC; --muted:#9FB0AA; --line:#2B3C38;
+    --teal:#3FC2A5; --wash:#123029;
+    --r-ready:#3FC2A5; --r-private:#9DB4E8; --r-escalated:#FF8F76; --r-review:#E8B94A;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:1.125rem;line-height:1.6}
+a{color:var(--teal);text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--ground);padding:8px 14px;border-radius:6px;z-index:10}
+.skip:focus{left:16px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+
+/* top bar */
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding-top:28px}
+.top .name{font-family:var(--display);font-weight:700;font-size:1.25rem;letter-spacing:-0.01em;color:var(--ink);text-decoration:none}
+.top nav{display:flex;gap:20px;font-size:1rem}
+.top nav a{color:var(--muted);text-decoration:none}
+.top nav a:hover{color:var(--teal);text-decoration:underline}
+
+/* hero */
+.hero{padding:72px 0 56px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2.6rem,7vw,5rem);line-height:1;letter-spacing:-0.03em;margin:0 0 28px;max-width:15ch;text-wrap:balance}
+.lede{max-width:46rem;font-size:1.3rem;line-height:1.55;color:var(--muted);margin:0 0 28px;text-wrap:pretty}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-block;padding:12px 20px;border-radius:10px;border:1.5px solid var(--ink);color:var(--ink);text-decoration:none;font-weight:600;font-size:1rem}
+.btn:hover{background:var(--ink);color:var(--ground)}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.primary:hover{filter:brightness(0.92);background:var(--teal);color:#fff}
+@media (prefers-color-scheme:dark){.btn.primary{color:#062018}.btn.primary:hover{color:#062018}}
+
+/* demo */
+.demo{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:clamp(20px,4vw,40px)}
+.demo h2{font-family:var(--display);font-size:clamp(1.7rem,3.5vw,2.25rem);letter-spacing:-0.02em;line-height:1.15;margin:0 0 8px}
+.demo .intro{margin:0 0 28px;color:var(--muted);max-width:44rem;font-size:1.05rem}
+.demo-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(24px,4vw,48px)}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+legend{font-weight:600;padding:0;margin-bottom:12px}
+.choice{display:block;position:relative;margin-bottom:10px}
+.choice input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.choice span{display:block;padding:14px 16px;border:1.5px solid var(--line);border-radius:12px;font-size:1.05rem;line-height:1.45;background:var(--ground)}
+.choice input:checked + span{border-color:var(--teal);background:var(--wash);box-shadow:inset 4px 0 0 var(--teal)}
+.choice input:focus-visible + span{outline:3px solid var(--teal);outline-offset:2px}
+.choice:hover span{border-color:var(--teal)}
+.toggle{display:flex;gap:12px;align-items:flex-start;margin-top:18px;padding-top:18px;border-top:1px solid var(--line);cursor:pointer;font-size:1.05rem}
+.toggle input{width:20px;height:20px;margin:4px 0 0;accent-color:var(--teal);flex:none}
+
+.result{border-left:4px solid var(--rc,var(--teal));padding-left:clamp(16px,3vw,28px)}
+.route{font-family:var(--mono);font-weight:600;font-size:clamp(1.5rem,3.4vw,2rem);color:var(--rc,var(--teal));margin:0 0 4px;word-break:break-word}
+.who{font-weight:600;margin:0 0 18px}
+.scores{display:flex;flex-wrap:wrap;gap:6px 28px;margin:0 0 18px;padding:0}
+.scores div{display:flex;gap:8px}
+.scores dt{color:var(--muted)}
+.scores dd{margin:0;font-weight:600}
+.why{margin:0 0 14px;color:var(--ink)}
+.steps{margin:0;padding-left:1.2rem}
+.steps li{margin-bottom:4px}
+.note{margin:28px 0 0;font-size:0.95rem;color:var(--muted);max-width:44rem}
+@keyframes settle{from{opacity:.25;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.result.changed .route,.result.changed .who{animation:settle .35s ease-out}
+@media (prefers-reduced-motion:reduce){.result.changed .route,.result.changed .who{animation:none}}
+
+/* ruled sections */
+.band{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:24px clamp(24px,5vw,64px);padding:56px 0;border-top:1px solid var(--line)}
+.band h2{font-family:var(--display);font-size:1.5rem;letter-spacing:-0.01em;line-height:1.2;margin:0}
+.band h3{font-family:var(--display);font-size:clamp(1.6rem,3vw,2rem);letter-spacing:-0.02em;line-height:1.15;margin:0 0 12px}
+.band p{margin:0 0 16px;max-width:42rem}
+.band ul{padding-left:1.2rem;margin:0 0 20px;max-width:42rem}
+.band li{margin-bottom:8px}
+.band dl{margin:0 0 20px;max-width:42rem}
+.band dt{font-weight:600}
+.band dd{margin:0 0 14px;color:var(--muted)}
+.tools{color:var(--muted);font-size:1rem}
+.builds{list-style:none;padding:0;margin:0}
+.builds li{padding:0 0 18px;margin:0 0 18px;border-bottom:1px solid var(--line)}
+.builds li:last-child{border-bottom:0;margin-bottom:0}
+.builds strong{display:block}
+.builds span{color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--muted);font-size:0.95rem}
+
+@media (max-width:760px){
+  body{font-size:1.0625rem}
+  .hero{padding:48px 0 40px}
+  .demo-grid{grid-template-columns:minmax(0,1fr)}
+  .band{grid-template-columns:minmax(0,1fr);padding:40px 0}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header class="top">
+    <a class="name" href="#top">Franklin Madumere</a>
+    <nav aria-label="Profiles">
+      <a href="https://github.com/Frankdespi">GitHub</a>
+      <a href="https://linkedin.com/in/franklinmadumere">LinkedIn</a>
+      <a href="mailto:frankdespi@gmail.com">Email</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <h1>AI workflows that know when to ask a person.</h1>
+      <p class="lede">I am Franklin Madumere, an AI and automation builder in Lagos, Nigeria. I build n8n and Make.com workflows that use OpenAI to score, route, and log work. I bring more than 15 years of regulated banking operations to the controls around them.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/Frankdespi/reputation-feedback-intelligence-engine">Read the capstone code</a>
+        <a class="btn" href="mailto:frankdespi@gmail.com">Email me</a>
+      </div>
+    </section>
+
+    <section class="demo" aria-labelledby="demo-h">
+      <h2 id="demo-h">Try the routing rules</h2>
+      <p class="intro">These are the rules from my capstone project. Pick a sample customer message and see where the system sends it. The scores are presets for this demo, not a live AI call.</p>
+      <div class="demo-grid">
+        <form id="demo-form" onsubmit="return false">
+          <fieldset>
+            <legend>Sample customer message</legend>
+            <label class="choice"><input type="radio" name="msg" value="great" checked><span>“Great service, fast and friendly. The car looks brand new.”</span></label>
+            <label class="choice"><input type="radio" name="msg" value="slow"><span>“A bit slow today, and the waiting area was crowded.”</span></label>
+            <label class="choice"><input type="radio" name="msg" value="scratch"><span>“You scratched my door and nobody apologised.”</span></label>
+            <label class="choice"><input type="radio" name="msg" value="vague"><span>“Fine, I suppose. Hard to say.”</span></label>
+          </fieldset>
+          <label class="toggle"><input type="checkbox" id="prior"><span>This customer has sent a negative reply before</span></label>
+        </form>
+
+        <div class="result" id="result" aria-live="polite">
+          <p class="route" id="r-route"></p>
+          <p class="who" id="r-who"></p>
+          <dl class="scores">
+            <div><dt>Sentiment</dt><dd id="r-sent"></dd></div>
+            <div><dt>Severity</dt><dd id="r-sev"></dd></div>
+            <div><dt>Confidence</dt><dd id="r-conf"></dd></div>
+          </dl>
+          <p class="why" id="r-why"></p>
+          <ul class="steps" id="r-steps"></ul>
+        </div>
+      </div>
+      <p class="note">In the real workflow, OpenAI returns the scores for every submitted message, and a Code node applies these same rules. Sample messages are invented for the demo.</p>
+    </section>
+
+    <section class="band" aria-labelledby="project-h">
+      <h2 id="project-h">Featured project</h2>
+      <div>
+        <h3>Reputation &amp; Feedback Intelligence Engine</h3>
+        <p>My capstone for the TS Academy AI &amp; Automation program. Two connected n8n workflows turn a customer feedback form into a scored, routed, and logged case. It is built around a car care chain case study and uses sample data only.</p>
+        <dl>
+          <dt>Workflow 01: send the feedback request</dt>
+          <dd>When a job is marked complete in Google Sheets, the customer receives an email with a pre-filled Google Form link.</dd>
+          <dt>Workflow 02: score and route feedback</dt>
+          <dd>Each form reply is scored by OpenAI, routed, drafted if needed, and logged. Urgent cases alert a manager on Telegram and by email.</dd>
+        </dl>
+        <ul>
+          <li>Unreadable or low-confidence results go to a person instead of being acted on.</li>
+          <li>AI-drafted replies are saved for review and never sent automatically.</li>
+          <li>Repeat complaints are detected and escalated.</li>
+          <li>Every outcome is logged with its score, route, and timestamp.</li>
+        </ul>
+        <p class="tools">n8n, OpenAI API, JavaScript Code nodes, Google Forms, Google Sheets, Gmail, Telegram</p>
+        <p><a href="https://github.com/Frankdespi/reputation-feedback-intelligence-engine">Workflow diagram, code, and prompts on GitHub</a></p>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="builds-h">
+      <h2 id="builds-h">Smaller builds</h2>
+      <ul class="builds">
+        <li><strong>Applicant tracking pipeline</strong><span>A multi-node n8n workflow for HR that connects Gmail and Google Sheets.</span></li>
+        <li><strong>Telegram weather notifications</strong><span>An n8n workflow that sends weather alerts to a Telegram chat through a bot.</span></li>
+        <li><strong>Google Sheets integrations in Make.com</strong><span>Scenarios that connect to Google Sheets, including the OAuth setup and fixes for authentication and sheet-name errors.</span></li>
+      </ul>
+    </section>
+
+    <section class="band" aria-labelledby="how-h">
+      <h2 id="how-h">How I work</h2>
+      <div>
+        <p>I watch how the work really happens and ask why each manual step exists before I build anything. I run the workflow after every two or three nodes to confirm that real data is flowing. I describe each workflow in plain language, so a non-technical owner knows what runs, when it runs, and what to check.</p>
+        <p>In banking, limits, approvals, and checks such as AML and KYC are routine. I build automation the same way, with a person reviewing anything uncertain and a record of every decision. I use Claude to write and debug the JavaScript in my Code nodes.</p>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="cred-h">
+      <h2 id="cred-h">Credentials</h2>
+      <ul>
+        <li>AWS Certified Solutions Architect – Associate, June 2025</li>
+        <li>AWS Certified Cloud Practitioner, January 2025</li>
+        <li>Postgraduate Program in Cloud Computing, Great Lakes Executive Education, December 2023</li>
+        <li>AI &amp; Automation Program, TS Academy, May to October 2026</li>
+      </ul>
+    </section>
+
+    <section class="band" aria-labelledby="contact-h">
+      <h2 id="contact-h">Get in touch</h2>
+      <div>
+        <p>Send a message describing a repetitive process. I will say honestly whether automation is the right fix.</p>
+        <ul>
+          <li><a href="mailto:frankdespi@gmail.com">frankdespi@gmail.com</a></li>
+          <li><a href="https://linkedin.com/in/franklinmadumere">linkedin.com/in/franklinmadumere</a></li>
+          <li><a href="https://github.com/Frankdespi">github.com/Frankdespi</a></li>
+        </ul>
+        <p class="tools">Lagos, Nigeria. Open to remote work.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>Every project on this site uses sample data. Nothing from my employer or its customers appears here.</footer>
+</div>
+
+<script>
+(function () {
+  var SAMPLES = {
+    great:   { sentiment: 'positive', severity: 'none', confidence: 0.95 },
+    slow:    { sentiment: 'negative', severity: 'low',  confidence: 0.90 },
+    scratch: { sentiment: 'negative', severity: 'high', confidence: 0.93 },
+    vague:   { sentiment: 'negative', severity: 'low',  confidence: 0.42 }
+  };
+  var THRESHOLD = 0.6;
+
+  // The same rules as code/compute-route.js, plus the confidence gate.
+  function decide(s, prior) {
+    if (s.confidence < THRESHOLD) return 'needs_review';
+    if (s.sentiment === 'positive') return 'ready_to_post';
+    if (s.severity === 'high' || prior) return 'escalated';
+    return 'private_queue';
+  }
+
+  var OUT = {
+    needs_review: {
+      color: 'var(--r-review)',
+      who: 'A person decides.',
+      steps: ['Logged in the Feedback Log as needs_review', 'No reply is drafted', 'A person reads the message and chooses what to do']
+    },
+    ready_to_post: {
+      color: 'var(--r-ready)',
+      who: 'No person needed.',
+      steps: ['Logged in the Feedback Log', 'No reply is drafted and no alert is sent', 'Ready for the business to publish']
+    },
+    private_queue: {
+      color: 'var(--r-private)',
+      who: 'A person reviews and sends the reply.',
+      steps: ['A reply is drafted from the customer’s own words', 'The draft is saved in the Feedback Log for the team to review', 'No alert is sent']
+    },
+    escalated: {
+      color: 'var(--r-escalated)',
+      who: 'A manager is alerted at once.',
+      steps: ['A reply is drafted first', 'The draft is saved in the Feedback Log', 'Telegram and email alerts go to the manager, with the draft marked for review before sending']
+    }
+  };
+
+  function why(route, s, prior) {
+    if (route === 'needs_review') {
+      return 'Confidence is ' + s.confidence.toFixed(2) + ', below the ' + THRESHOLD + ' threshold, so the system does not guess. The item is held for a person.';
+    }
+    if (route === 'ready_to_post') {
+      return 'Positive feedback needs no reply. Earlier complaints do not change that.';
+    }
+    if (route === 'escalated') {
+      if (s.severity === 'high' && prior) return 'The message is high severity and this customer has complained before.';
+      if (s.severity === 'high') return 'The message is high severity, so a manager hears about it straight away.';
+      return 'The message is only mildly negative, but this customer has complained before, so it is escalated.';
+    }
+    return 'The message is mildly negative and this is the customer’s first complaint, so it waits in the private queue.';
+  }
+
+  var form = document.getElementById('demo-form');
+  var prior = document.getElementById('prior');
+  var result = document.getElementById('result');
+  var el = {
+    route: document.getElementById('r-route'), who: document.getElementById('r-who'),
+    sent: document.getElementById('r-sent'), sev: document.getElementById('r-sev'),
+    conf: document.getElementById('r-conf'), why: document.getElementById('r-why'),
+    steps: document.getElementById('r-steps')
+  };
+  var last = null;
+
+  function render() {
+    var key = form.elements.msg.value;
+    var s = SAMPLES[key];
+    var route = decide(s, prior.checked);
+    var o = OUT[route];
+    result.style.setProperty('--rc', o.color);
+    el.route.textContent = route;
+    el.who.textContent = o.who;
+    el.sent.textContent = s.sentiment;
+    el.sev.textContent = s.severity;
+    el.conf.textContent = s.confidence.toFixed(2);
+    el.why.textContent = why(route, s, prior.checked);
+    el.steps.innerHTML = '';
+    o.steps.forEach(function (t) { var li = document.createElement('li'); li.textContent = t; el.steps.appendChild(li); });
+    if (last !== null && last !== route) {
+      result.classList.remove('changed'); void result.offsetWidth; result.classList.add('changed');
+    }
+    last = route;
+  }
+
+  form.addEventListener('change', render);
+  render();
+})();
+</script>
+</body>
+</html>
