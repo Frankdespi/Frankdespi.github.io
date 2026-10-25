@@ -17,7 +17,7 @@ The owner logs sales, batches, and costs in Google Sheets, picking the flavour a
 | 1. Low-stock alert | A new sale row is added (Google Sheets trigger) | Get Stock Row, Is Low (IF), Telegram Alert | A Telegram message when a flavour, or its stickers, run low |
 | 2. End-of-day summary | Schedule, 8 pm | Read Daily_Log, Read stock, Build Summary (Code), Telegram Summary, Gmail Summary | Bottles sold, revenue, top seller, and exactly which flavours and sizes were sold, on Telegram and by email |
 | 3. No-sales reminder | Schedule, 6 pm | Read Daily_Log, Count Today (Code), Nothing Logged (IF), Telegram Reminder | A nudge if nothing has been logged yet |
-| 4. Weekly roll-up | Schedule, Sunday 9 pm | Read Daily_Log, Read Costs, Weekly Totals (Code), Save Weekly Summary (append to the sheet), Telegram Weekly | Revenue, costs, profit, and flavours sold, saved to the sheet and sent to the owner by Telegram and email |
+| 4. Weekly roll-up | Schedule, Sunday 9 pm | Read Daily_Log, Read Costs, Weekly Totals (Code), Save Weekly Summary (append to the sheet), Telegram Weekly, Send a message (Gmail) | Revenue, costs, profit, and flavours sold, saved to the sheet and sent to the owner by Telegram and email |
 | 5. Error alert | Error Trigger | Telegram Error | A message if anything breaks |
 | 6. Weekly backup | Schedule, Sunday 11 pm | Copy Sheet Backup (Google Drive) | A copy of the sheet saved in Google Drive |
 
@@ -43,7 +43,7 @@ flowchart TB
     end
     subgraph L4["Lane 4: weekly roll-up, Sunday 9 pm"]
         direction LR
-        d1["Schedule Sunday 9pm"] --> d2["Read Daily_Log"] --> d3["Read Costs"] --> d4["Weekly Totals<br/>Code"] --> d5["Save Weekly Summary<br/>append to sheet"] --> d6["Telegram Weekly"] --> d7["Track Time Saved"]
+        d1["Schedule Sunday 9pm"] --> d2["Read Daily_Log"] --> d3["Read Costs"] --> d4["Weekly Totals<br/>Code"] --> d5["Save Weekly Summary<br/>append to sheet"] --> d6["Telegram Weekly"] --> d6b["Send a message<br/>Gmail"] --> d7["Track Time Saved"]
     end
     subgraph L5["Lane 5: error alert"]
         direction LR
@@ -63,7 +63,7 @@ flowchart TB
 ## Three things I would tell anyone building something similar
 
 1. **Let the spreadsheet do the arithmetic and let automation handle the reporting.** Fewer moving parts means fewer things to break.
-2. **Give every node a unique name when several workflows share one canvas.** Every node here carries its lane prefix, from L1 to L6, so no two nodes ever share a name.
+2. **Give every node a unique name when several workflows share one canvas.** I prefixed node names with their lane number, from L1 to L6, so that nodes in different lanes never share a name.
 3. **Test sheet protection from a second account.** Owners are never blocked by their own locks.
 
 ## Handover
