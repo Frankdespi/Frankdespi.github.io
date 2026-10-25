@@ -17,7 +17,7 @@ The owner logs sales, batches, and costs in Google Sheets, picking the flavour a
 | 1. Low-stock alert | A new sale row is added (Google Sheets trigger) | Get Stock Row, Is Low (IF), Telegram Alert | A Telegram message when a flavour, or its stickers, run low |
 | 2. End-of-day summary | Schedule, 8 pm | Read Daily_Log, Read stock, Build Summary (Code), Telegram Summary, Gmail Summary | Bottles sold, revenue, top seller, and exactly which flavours and sizes were sold, on Telegram and by email |
 | 3. No-sales reminder | Schedule, 6 pm | Read Daily_Log, Count Today (Code), Nothing Logged (IF), Telegram Reminder | A nudge if nothing has been logged yet |
-| 4. Weekly roll-up | Schedule, Sunday 9 pm | Read Daily_Log, Read Costs, Weekly Totals (Code), Save Weekly Summary (append to the sheet), Telegram Weekly | Revenue, costs, profit, and flavours sold, saved to the sheet and sent to the owner |
+| 4. Weekly roll-up | Schedule, Sunday 9 pm | Read Daily_Log, Read Costs, Weekly Totals (Code), Save Weekly Summary (append to the sheet), Telegram Weekly | Revenue, costs, profit, and flavours sold, saved to the sheet and sent to the owner by Telegram and email |
 | 5. Error alert | Error Trigger | Telegram Error | A message if anything breaks |
 | 6. Weekly backup | Schedule, Sunday 11 pm | Copy Sheet Backup (Google Drive) | A copy of the sheet saved in Google Drive |
 
