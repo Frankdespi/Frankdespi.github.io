@@ -3,3 +3,10 @@
 Source for my portfolio site: [frankdespi.github.io](https://frankdespi.github.io).
 
 It is a single static page (`index.html`) with no build step. The interactive demo on the page applies the routing rules from my capstone project, [reputation-feedback-intelligence-engine](https://github.com/Frankdespi/reputation-feedback-intelligence-engine). The demo uses preset scores and sample messages, not a live AI call.
+
+## Projects
+
+Write-ups for two more builds live in the `projects` folder:
+
+- [Sales & Inventory Automation](projects/sales-inventory-automation/): an n8n automation for a small juice business, in six lanes on one canvas.
+- [My First AI Agent](projects/first-ai-agent/): an n8n AI agent that searches the web, then messages and emails the answer.

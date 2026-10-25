@@ -98,6 +98,12 @@ legend{font-weight:600;padding:0;margin-bottom:12px}
 .band dt{font-weight:600}
 .band dd{margin:0 0 14px;color:var(--muted)}
 .tools{color:var(--muted);font-size:1rem}
+.proj{padding:0 0 40px;margin:0 0 40px;border-bottom:1px solid var(--line)}
+.proj:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.proj h3{font-size:clamp(1.4rem,2.6vw,1.75rem)}
+.proj figure{margin:20px 0 0}
+.proj img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
+.proj figcaption{margin-top:8px;font-size:0.95rem;color:var(--muted);max-width:42rem}
 .builds{list-style:none;padding:0;margin:0}
 .builds li{padding:0 0 18px;margin:0 0 18px;border-bottom:1px solid var(--line)}
 .builds li:last-child{border-bottom:0;margin-bottom:0}
@@ -187,6 +193,42 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--muted);f
       </div>
     </section>
 
+    <section class="band" aria-labelledby="also-h">
+      <h2 id="also-h">Also built</h2>
+      <div>
+        <article class="proj">
+          <h3>Sales &amp; Inventory Automation</h3>
+          <p>A small juice business was tracking everything by hand. The owner now logs sales, batches, and costs in Google Sheets, picking the flavour and size from dropdowns. The spreadsheet does the arithmetic, and n8n does the watching, in six lanes on one canvas.</p>
+          <ul>
+            <li>A Telegram alert when a flavour or its stickers run low.</li>
+            <li>An 8 pm summary by Telegram and email: bottles sold, revenue, top seller, and which flavours and sizes were sold.</li>
+            <li>A 6 pm nudge if nothing has been logged yet.</li>
+            <li>A Sunday roll-up of revenue, costs, profit, and flavours sold, saved to the sheet.</li>
+            <li>An error alert, and a weekly backup to Google Drive.</li>
+          </ul>
+          <p>I also wrote a short daily guide so the owner can run it without me.</p>
+          <p class="tools">n8n, Google Sheets, Telegram, Gmail, Google Drive, JavaScript Code nodes</p>
+          <p><a href="https://github.com/Frankdespi/Frankdespi.github.io/tree/main/projects/sales-inventory-automation">Lane-by-lane write-up on GitHub</a></p>
+          <figure>
+            <img src="projects/sales-inventory-automation/canvas.png" width="1679" height="859" loading="lazy" alt="The n8n canvas for the Sales and Inventory Automation, with six lanes: a low-stock alert, an 8 pm summary, a 6 pm no-sales reminder, a Sunday weekly roll-up, an error alert, and a weekly backup.">
+            <figcaption>The n8n canvas. It shows workflow structure only, with no credentials, names, or figures.</figcaption>
+          </figure>
+        </article>
+
+        <article class="proj">
+          <h3>My First AI Agent</h3>
+          <p>An n8n AI agent that takes one Telegram prompt, searches the web, then messages and emails me the answer. A Telegram trigger feeds an AI Agent node with an OpenAI chat model, Simple Memory, a SerpApi search tool, and a Gmail tool.</p>
+          <p>The main lesson was that an agent will not chain tools on its own. The system prompt has to say so explicitly: search first, then email the result. Without that instruction, the agent stops after one tool.</p>
+          <p class="tools">n8n AI Agent, OpenAI Chat Model, Simple Memory, SerpApi, Gmail, Telegram</p>
+          <p><a href="https://github.com/Frankdespi/Frankdespi.github.io/tree/main/projects/first-ai-agent">Flow and lesson on GitHub</a></p>
+          <figure>
+            <img src="projects/first-ai-agent/canvas.png" width="1707" height="847" loading="lazy" alt="The n8n canvas for My First Agent. A Telegram trigger feeds an AI Agent node that has an OpenAI chat model, Simple Memory, a Gmail tool, and a SerpApi Google search tool. The agent answer goes to a Telegram reply node.">
+            <figcaption>The n8n canvas for the agent. It is published and runs from Telegram.</figcaption>
+          </figure>
+        </article>
+      </div>
+    </section>
+
     <section class="band" aria-labelledby="builds-h">
       <h2 id="builds-h">Smaller builds</h2>
       <ul class="builds">
@@ -228,7 +270,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--muted);f
     </section>
   </main>
 
-  <footer>Every project on this site uses sample data. Nothing from my employer or its customers appears here.</footer>
+  <footer>The capstone project uses sample data. For the sales and inventory automation, the business name and its figures are kept private. Nothing from my employer or its customers appears here.</footer>
 </div>
 
 <script>
