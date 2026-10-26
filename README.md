@@ -6,7 +6,10 @@ It is a single static page (`index.html`) with no build step. The interactive de
 
 ## Projects
 
-Write-ups for two more builds live in the `projects` folder:
+Each of these builds has its own repository:
 
-- [Sales & Inventory Automation](projects/sales-inventory-automation/): an n8n automation for a small juice business, in six lanes on one canvas.
-- [My First AI Agent](projects/first-ai-agent/): an n8n AI agent that searches the web, then messages and emails the answer.
+- [Sales & Inventory Automation](https://github.com/Frankdespi/sales-inventory-automation): an n8n automation for a small juice business, in six lanes on one canvas.
+- [My First AI Agent](https://github.com/Frankdespi/n8n-first-ai-agent): an n8n AI agent that searches the web, then messages and emails the answer.
+- [Reputation & Feedback Intelligence Engine](https://github.com/Frankdespi/reputation-feedback-intelligence-engine): my TS Academy capstone.
+
+The screenshots on the page live in the `assets` folder.
